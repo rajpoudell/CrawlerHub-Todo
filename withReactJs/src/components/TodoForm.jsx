@@ -1,33 +1,20 @@
 // components/TodoForm.js
 import React, { useState } from "react";
+import { validate } from "../utils/validation";
 
-const TodoForm = () => {
+const TodoForm = ({addTodo}) => {
   const [form, setForm] = useState({ fullName: "", email: "" });
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const validate = () => {
-    const errs = {};
-    if (!form.fullName.trim()) errs.fullName = "Full name is required";
-    if (!form.email) {
-      errs.email = "Email is required";
-    } else if (!/^\S+@\S+\.\S+$/.test(form.email)) {
-      errs.email = "Invalid email format";
-    }
-    return errs;
-  };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errs = validate();
+    const errs = validate(form);
     if (Object.keys(errs).length === 0) {
-      const newEntry = { ...form, id: Date.now() };
-      const existingEntries =
-        JSON.parse(localStorage.getItem("formEntries")) || [];
-      const updatedEntries = [...existingEntries, newEntry];
 
-      localStorage.setItem("formEntries", JSON.stringify(updatedEntries));
-      // addTodo(form);
+      addTodo(form);
       setForm({ fullName: "", email: "" });
       setIsSubmitted(true);
       setTimeout(() => setIsSubmitted(false), 3000);
